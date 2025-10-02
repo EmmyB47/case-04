@@ -7,7 +7,7 @@ from storage import append_json_line
 
 import hashlib
 
-def sha256_hex(s: str) -> str:
+def sha256_hash(s: str) -> str:
     return hashlib.sha256(s.encode("utf-8")).hexdigest()
 
 app = Flask(__name__)
@@ -37,12 +37,10 @@ def submit_survey():
     email_norm = submission.email.strip().lower()
     hashed_email = sha256_hash(email_norm)
     hashed_age = sha256_hash(str(submission.age))
-
     hour_stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H")
     submission_id = submission.submission_id or sha256_hash(email_norm + hour_stamp)
 
     record = StoredSurveyRecord(
-        
         name=submission.name,
         hashed_email = hashed_email,
         hashed_age = hashed_age,
@@ -50,9 +48,7 @@ def submit_survey():
         rating=submission.rating,
         comments=submission.comments,
         user_agent=submission.user_agent,
-
         submission_id = submission_id,
-        
         received_at=datetime.now(timezone.utc),
         ip=request.headers.get("X-Forwarded-For", request.remote_addr or "")
     )
