@@ -28,12 +28,12 @@ class StoredSurveyRecord(SurveySubmission):
     name: str
     consent: bool
     rating: int
-    comments: Optional[str] = None
-    user_agent: Optional[str] = None
+    comments: Optional[str]
+    user_agent: Optional[str]
 
     hashed_email: str
     hashed_age: str
-    submission_id: str
+    submission_id: [Optional]str
     
     received_at: datetime
     ip: str

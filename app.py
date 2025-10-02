@@ -35,22 +35,22 @@ def submit_survey():
         return jsonify({"error": "validation_error", "detail": ve.errors()}), 422
 
     email_norm = submission.email.strip().lower()
-    hashed_email = sha256_hex(email_norm)
-    hashed_age = sha256_hex(str(submission.age))
+    hashed_email = sha256_hash(email_norm)
+    hashed_age = sha256_hash(str(submission.age))
 
     hour_stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H")
-    submission_id = submission.submission_id or sha256_hex(email_norm + hour_stamp)
+    submission_id = submission.submission_id or sha256_hash(email_norm + hour_stamp)
 
     record = StoredSurveyRecord(
         
         name=submission.name,
+        hashed_email = hashed_email,
+        hashed_age = hashed_age,
         consent=submission.consent,
         rating=submission.rating,
         comments=submission.comments,
         user_agent=submission.user_agent,
 
-        hashed_email = hashed_email,
-        hashed_age = hashed_age,
         submission_id = submission_id,
         
         received_at=datetime.now(timezone.utc),
@@ -60,4 +60,4 @@ def submit_survey():
     return jsonify({"status": "ok"}), 201
 
 if __name__ == "__main__":
-    app.run(port=0, debug=True)
+    app.run(port=5000, debug=True)
